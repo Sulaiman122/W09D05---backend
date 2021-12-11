@@ -2,7 +2,6 @@ const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
 require("./db");
-const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 require('./config/passport')(passport);
@@ -11,16 +10,13 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000", // <-- location of the react app were connecting to
+    origin: "http://localhost:3000", 
+    methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
 );
 
-
-//------------ Bodyparser Configuration ------------//
 app.use(express.urlencoded({ extended: false }))
-
-//------------ Express session Configuration ------------//
 app.use(
     session({
         secret: 'secret',
@@ -29,23 +25,9 @@ app.use(
     })
 );
 
-//------------ Passport Middlewares ------------//
 app.use(passport.initialize());
 app.use(passport.session());
 
-//------------ Connecting flash ------------//
-app.use(flash());
-
-//------------ Global variables ------------//
-app.use(function(req, res, next) {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error = req.flash('error');
-  next();
-});
-//------------ Routes ------------//
-// app.use('/', require('./routes/index'));
-// app.use('/auth', require('./routes/auth'));
 
 
 const roleRouter = require('./routers/routes/role');

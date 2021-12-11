@@ -324,7 +324,6 @@ const login = (req, res, next) => {
   passport.authenticate("local", {
     successRedirect: "/login/success",
     failureRedirect: "/login/err",
-    failureFlash: true,
   })(req, res, next);
 };
 

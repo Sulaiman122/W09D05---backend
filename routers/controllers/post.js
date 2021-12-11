@@ -3,29 +3,12 @@ const likeModel = require("../../db/models/like");
 const roleModel = require("../../db/models/role");
 const commentModel = require("../../db/models/comment");
 
-const getPostsForAdmin = (req, res) => {
-  postModel
-    .find({ isDeleted: false })
-    .populate({path:"user comment like", match:{isDeleted:false}})
-    .then((result) => {
-      if (result) {
-        res.status(200).send(result);
-      } else {
-        res.status(200).json("no posts found");
-      }
-    })
-    .catch((err) => {
-      res.status(200).json(err);
-    });
-};
-
 const getPosts = (req, res) => {
   console.log('im hereeeeeeeeeeee');
   postModel
     .find({ isDeleted: false })
     .populate({path:"user comment like", match:{isDeleted:false}})
     .then((result) => {
-      console.log(result);
       if (result) {
         res.status(200).send(result);
       } else {
@@ -181,5 +164,4 @@ module.exports = {
   updatePost,
   deletePost,
   giveLikeOrRemove,
-  getPostsForAdmin
 };

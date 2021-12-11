@@ -5,7 +5,7 @@ const {
   deleteComment,
 } = require("./../controllers/comment");
 const commentRouter = express.Router();
-const authentication = require("../middlewares/authentication");
+const {authentication} = require("../../config/checkAuth");
 
 commentRouter.post("/comment/:id", authentication, createComment);
 commentRouter.put("/comment/:id", authentication, updateComment);
