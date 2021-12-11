@@ -326,7 +326,6 @@ const login = (req, res, next) => {
     failureRedirect: "/login/err",
     failureFlash: true,
   })(req, res, next);
-
 };
 
 const logout = (req, res) => {
