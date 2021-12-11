@@ -20,8 +20,9 @@ const getPostsForAdmin = (req, res) => {
 };
 
 const getPosts = (req, res) => {
+  console.log('im hereeeeeeeeeeee');
   postModel
-    .find({ isDeleted: false, user: req.token.id })
+    .find({ isDeleted: false })
     .populate({path:"user comment like", match:{isDeleted:false}})
     .then((result) => {
       console.log(result);

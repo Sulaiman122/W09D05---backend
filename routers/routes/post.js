@@ -1,9 +1,10 @@
 const express = require('express')
 const  {getPosts ,getPostById, createPost, updatePost, deletePost, giveLikeOrRemove, getPostsForAdmin} = require('./../controllers/post')
 const postRouter = express.Router()
-const authentication = require("../middlewares/authentication");
+const {authentication} = require("../../config/checkAuth");
 
-postRouter.get("/posts",authentication, getPosts);
+
+postRouter.post("/posts",authentication, (req, res) => res.send('yessss'));
 postRouter.get("/posts/admin",authentication, getPostsForAdmin);
 postRouter.get("/posts/:id",authentication, getPostById);
 postRouter.post("/post",authentication, createPost);

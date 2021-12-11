@@ -5,13 +5,11 @@ require("./db");
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+require('./config/passport')(passport);
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-
-//------------ Passport Configuration ------------//
-require('./config/passport')(passport);
 
 
 //------------ Bodyparser Configuration ------------//
