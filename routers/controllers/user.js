@@ -7,7 +7,7 @@ const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 const SECRET_KEY = process.env.SECRET_KEY;
 const SECRET_RESET_KEY = process.env.SECRET_RESET_KEY;
-const CLIENT_URL = "http://localhost:3000"; //frontend URL
+const CLIENT_URL = "https://w09d05.herokuapp.com"; //frontend URL
 
 const getUsers = (req, res) => {
   userModel
