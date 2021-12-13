@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://w09d05.herokuapp.com", 
+    origin: "http://localhost:3000", 
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })

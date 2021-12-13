@@ -3,7 +3,7 @@ const {
   register,
   login,
   getUsers,
-  removeUser, activate, logout, resetPassword, gotoReset, forgotPassword
+  removeUser, activate, logout, resetPassword, gotoReset, forgotPassword, googleLogin
 } = require("./../controllers/user");
 const {authentication} = require("../../config/checkAuth");
 
@@ -20,5 +20,12 @@ userRouter.post('/forgot', forgotPassword);
 userRouter.post('/reset/:id', resetPassword);
 userRouter.get('/forgot/:token', gotoReset);
 userRouter.get('/logout', logout);
-
+userRouter.post('/google_login', googleLogin, login);
+userRouter.get('/user_available',(req, res)=>{
+  if(req.user){
+    res.json({user:req.user})
+  }else{
+    res.json("no user")
+  }
+})
 module.exports = userRouter;

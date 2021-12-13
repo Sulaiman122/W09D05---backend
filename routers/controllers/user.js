@@ -7,7 +7,7 @@ const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 const SECRET_KEY = process.env.SECRET_KEY;
 const SECRET_RESET_KEY = process.env.SECRET_RESET_KEY;
-const CLIENT_URL = "https://w09d05.herokuapp.com"; //frontend URL
+const CLIENT_URL = "http://localhost:3000"; //frontend URL
 
 const getUsers = (req, res) => {
   userModel
@@ -160,7 +160,7 @@ const activate = (req, res) => {
                 newUser
                   .save()
                   .then((user) => {
-                    res.json({success: user});
+                    res.json({ success: user });
                   })
                   .catch((err) => console.log(err));
               });
@@ -271,9 +271,11 @@ const gotoReset = (req, res) => {
         const { _id } = decodedToken;
         userModel.findById(_id, (err, user) => {
           if (err) {
-            res.json({ error: "User with email ID does not exist! Please try again." });
+            res.json({
+              error: "User with email ID does not exist! Please try again.",
+            });
           } else {
-            res.json({ success: _id});
+            res.json({ success: _id });
           }
         });
       }
@@ -288,15 +290,11 @@ const resetPassword = (req, res) => {
   const id = req.params.id;
 
   if (!password || !password2) {
-    res.json({error:"Please enter all fields."});
-  }
-
-  else if (password.length < 8) {
-    res.json({error:"Password must be at least 8 characters."});
-  }
-
-  else if (password != password2) {
-    res.json({error:"Passwords do not match."});
+    res.json({ error: "Please enter all fields." });
+  } else if (password.length < 8) {
+    res.json({ error: "Password must be at least 8 characters." });
+  } else if (password != password2) {
+    res.json({ error: "Passwords do not match." });
   } else {
     bcryptjs.genSalt(10, (err, salt) => {
       bcryptjs.hash(password, salt, (err, hash) => {
@@ -308,9 +306,9 @@ const resetPassword = (req, res) => {
           { password },
           function (err, result) {
             if (err) {
-              res.json({error:"Error resetting password!"});
+              res.json({ error: "Error resetting password!" });
             } else {
-              res.json({error:"Password reset successfully!"});
+              res.json({ error: "Password reset successfully!" });
             }
           }
         );
@@ -319,17 +317,50 @@ const resetPassword = (req, res) => {
   }
 };
 
-
 const login = (req, res, next) => {
   passport.authenticate("local", {
     successRedirect: "/login/success",
     failureRedirect: "/login/err",
   })(req, res, next);
+  console.log(req.user);
 };
 
 const logout = (req, res) => {
   req.logout();
-  res.json({logout: 'You are logged out'});
+  res.json({ logout: "You are logged out" });
+};
+
+const googleLogin = (req, res, next) => {
+  const { email, password, username } = req.body;
+  userModel
+    .findOne({ email })
+    .then((result) => {
+      if (result) {
+        next();
+      } else {
+        const newUser = new userModel({
+          username,
+          email,
+          password,
+        });
+        bcryptjs.genSalt(10, (err, salt) => {
+          bcryptjs.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err;
+            newUser.password = hash;
+            newUser
+              .save()
+              .then((user) => {
+                console.log('i reached here');
+                next()
+              })
+              .catch((err) => console.log(err));
+          });
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(200).json(err);
+    });
 };
 
 module.exports = {
@@ -342,4 +373,5 @@ module.exports = {
   resetPassword,
   gotoReset,
   forgotPassword,
+  googleLogin,
 };

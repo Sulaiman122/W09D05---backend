@@ -5,7 +5,7 @@ const {authentication} = require("../../config/checkAuth");
 
 
 postRouter.get("/posts",authentication, getPosts);
-postRouter.get("/posts/:id",authentication, getPostById);
+postRouter.get("/post/:id",authentication, getPostById);
 postRouter.post("/post",authentication, createPost);
 postRouter.put("/post/:id", authentication, updatePost);
 postRouter.delete("/post/:id",authentication, deletePost);

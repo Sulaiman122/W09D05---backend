@@ -4,10 +4,9 @@ const roleModel = require("../../db/models/role");
 const commentModel = require("../../db/models/comment");
 
 const getPosts = (req, res) => {
-  console.log('im hereeeeeeeeeeee');
   postModel
     .find({ isDeleted: false })
-    .populate({path:"user comment like", match:{isDeleted:false}})
+    .populate({ path: "user comment like", match: { isDeleted: false } })
     .then((result) => {
       if (result) {
         res.status(200).send(result);
@@ -21,47 +20,54 @@ const getPosts = (req, res) => {
 };
 
 const createPost = (req, res) => {
-  const { desc, img, isDeleted } = req.body;
-  const newPost = new postModel({ desc, img, isDeleted, user: req.token.id });
-  console.log(req.token);
-  newPost
-    .save()
+  const { title, desc, img, user } = req.body;
+  const newPost = new postModel({ title, desc, img, user });
+  if (!title || !desc) {
+    res.json({ error: "Please fill the fields man" });
+  } else {
+    newPost
+      .save()
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((err) => {
+        res.status(200).json(err);
+      });
+  }
+};
+
+const getPostById = async (req, res) => {
+  const { id } = req.params;
+
+  postModel
+    .find({ _id: id, isDeleted: false })
+    .populate({ path: "user comment like", match: { isDeleted: false } })
     .then((result) => {
-      res.status(201).json(result);
+      if (result) {
+        res.status(200).json(result);
+      } else {
+        res.status(200).json("no post found");
+      }
     })
     .catch((err) => {
       res.status(200).json(err);
     });
 };
 
-const getPostById = async (req, res) => {
-  const { id } = req.params;
-
-  postModel.find({ _id: id, isDeleted: false })
-  .populate({path:"user comment like", match:{isDeleted:false}})
-  .then((result) => {
-    if (result) {
-      res.status(200).json(result);
-    } else {
-      res.status(200).json("no post found");
-    }
-  }).catch((err) => {
-    res.status(200).json(err);
-  });;
-
-};
-
 const deletePost = async (req, res) => {
   const { id } = req.params;
   let sameUser = false;
 
-  await postModel.findOne({ _id: id, user: req.token.id }).then((result) => {
-    if (result) {
-      sameUser = true;
-    }
-  }).catch((err) => {
-    res.status(200).json(err);
-  });;
+  await postModel
+    .findOne({ _id: id, user: req.token.id })
+    .then((result) => {
+      if (result) {
+        sameUser = true;
+      }
+    })
+    .catch((err) => {
+      res.status(200).json(err);
+    });
 
   const result = await roleModel.findById(req.token.role);
 
@@ -89,13 +95,16 @@ const updatePost = async (req, res) => {
   const { desc, img } = req.body;
   let sameUser = false;
 
-  await postModel.findOne({ _id: id, user: req.token.id }).then((result) => {
-    if (result) {
-      sameUser = true;
-    }
-  }).catch((err) => {
-    res.status(400).json(err);
-  });;
+  await postModel
+    .findOne({ _id: id, user: req.token.id })
+    .then((result) => {
+      if (result) {
+        sameUser = true;
+      }
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 
   const result = await roleModel.findById(req.token.role);
 
@@ -140,16 +149,14 @@ const giveLikeOrRemove = async (req, res) => {
           user: req.token.id,
           post: id,
         });
-        newLike
-        .save()
-        .then((result) => {
+        newLike.save().then((result) => {
           postModel
             .findByIdAndUpdate(id, { $push: { like: result._id } })
             .then((result) => {
               console.log(result);
             });
           res.status(201).json(result);
-        })
+        });
       }
     })
     .catch((err) => {

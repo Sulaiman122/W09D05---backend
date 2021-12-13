@@ -2,15 +2,25 @@ const commentModel = require("../../db/models/comment");
 const roleModel = require("../../db/models/role");
 const postModel = require("../../db/models/post");
 
+
+const getComments = (req, res) => {
+  commentModel.find({ post: req.body.postID })
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
 const createComment = (req, res) => {
   const { id } = req.params;
 
-  const { comment, isDeleted } = req.body;
+  const { comment, username } = req.body;
 
   const newComment = new commentModel({
     comment,
-    isDeleted,
-    user: req.token.id,
+    user: username,
     post: id,
   });
   newComment
@@ -93,4 +103,5 @@ module.exports = {
   createComment,
   updateComment,
   deleteComment,
+  getComments,
 };
