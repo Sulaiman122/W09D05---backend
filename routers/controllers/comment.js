@@ -4,7 +4,7 @@ const postModel = require("../../db/models/post");
 
 
 const getComments = (req, res) => {
-  commentModel.find({ post: req.body.postID, isDeleted:false })
+  commentModel.find({ post: req.body.postID, isDeleted:false }).populate('user')
     .then((result) => {
       res.send(result);
     })
@@ -15,9 +15,6 @@ const getComments = (req, res) => {
 
 const createComment = (req, res) => {
   const { id } = req.params;
-  console.log(id);
-  console.log(id);
-  console.log(id);
   const { comment, username } = req.body;
 
   const newComment = new commentModel({
@@ -42,18 +39,6 @@ const createComment = (req, res) => {
 
 const deleteComment = async (req, res) => {
   const { id } = req.params;
-  let sameUser = false;
-  console.log(req.user._id);
-  await commentModel.findOne({ _id: id, user: req.user._id }).then((result) => {
-    if (result) {
-      sameUser = true;
-    }
-  });
-
-  // const result = await roleModel.findById(req.token.role);
-
-  //here we check if it's Admin user OR the same user who created the comment
-  if (/* result.role == "admin" || */sameUser) {
     commentModel
       .findByIdAndUpdate(id, { $set: { isDeleted: true } })
       .then((result) => {
@@ -66,24 +51,12 @@ const deleteComment = async (req, res) => {
       .catch((err) => {
         res.status(200).json(err);
       });
-  } else {
-    res.status(200).json("you don't have the priveleges to remove the comment");
-  }
 };
+
 
 const updateComment = async (req, res) => {
   const { id } = req.params;
   const { comment } = req.body;
-  let sameUser = false;
-
-  await commentModel.findOne({ _id: id, user: req.token.id }).then((result) => {
-    if (result) {
-      sameUser = true;
-    }
-  });
-
-  //here we check if it's the same user who created the comment
-  if (sameUser) {
     commentModel
       .findByIdAndUpdate(id, { $set: { comment: comment } })
       .then((result) => {
@@ -96,10 +69,8 @@ const updateComment = async (req, res) => {
       .catch((err) => {
         res.status(400).json(err);
       });
-  } else {
-    res.status(400).json("you don't have the priveleges to update the comment");
-  }
 };
+
 
 module.exports = {
   createComment,
