@@ -2,7 +2,9 @@
 
 
 ### Heroku deployment: [http://w09d05.herokuapp.com/](http://w09d05.herokuapp.com/)
-
+ - didn't work properly in heroku since I used passport sessions to authenticate users, for some reason in heroku doesn't set cookies in session for security purposes.
+ though, It work 100% fine locally.
+ 
 ## UML diagram
 <img src='https://i.ibb.co/6PCmkYg/Untitled-drawio.png' alt='img'/>
 
