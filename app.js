@@ -12,11 +12,11 @@ app.use(cors());
 
 app.use(express.urlencoded({ extended: false }))
 app.use(
-    session({
-        secret: 'secret',
-        resave: true,
-        saveUninitialized: true
-    })
+  cors({
+    origin: "https://w09d05.herokuapp.com", 
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
 );
 
 app.use(passport.initialize());
