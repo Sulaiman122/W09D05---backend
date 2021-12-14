@@ -8,13 +8,7 @@ require('./config/passport')(passport);
 
 const app = express();
 app.use(express.json());
-app.use(
-  cors({
-    origin: "https://w09d05.herokuapp.com", 
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }))
 app.use(
