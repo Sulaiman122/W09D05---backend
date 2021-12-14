@@ -322,8 +322,10 @@ const login = (req, res, next) => {
     successRedirect: "/login/success",
     failureRedirect: "/login/err",
   })(req, res, next);
-  console.log(req.user);
+  console.log('user should not be undefined ',req.user);
 };
+
+
 
 const logout = (req, res) => {
   req.logout();

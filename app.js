@@ -5,6 +5,7 @@ require("./db");
 const session = require('express-session');
 const passport = require('passport');
 require('./config/passport')(passport);
+var cookieParser = require('cookie-parser')
 
 const app = express();
 app.use(express.json());
@@ -12,14 +13,31 @@ app.use(
     cors({credentials: true, origin: true, methods: "GET,POST,PUT,DELETE",}) 
 );
 
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }))
-app.use(
-    session({
-        secret: 'secret',
-        resave: true,
-        saveUninitialized: true
-    })
-);
+app.set("trust proxy", 1);
+// app.use(
+//     session({
+//         secret: 'secret',
+//         resave: true,
+//         saveUninitialized: true,
+//         cookie: {
+//             sameSite: 'none',
+//             secure: true,
+//         }
+//     })
+// );
+
+app.use(session({
+    secret: "secret",
+    saveUninitialized: true,
+    resave: true,
+    cookie: {
+        // secure: true,
+        maxAge: 8 * 180 * 60 * 1000,
+
+    },
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
