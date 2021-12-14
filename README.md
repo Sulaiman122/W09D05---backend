@@ -1,7 +1,7 @@
 # W09D05---backend
 
 
-### Heroku deployment: (http://w09d05.herokuapp.com/)[http://w09d05.herokuapp.com/]
+### Heroku deployment: [http://w09d05.herokuapp.com/](http://w09d05.herokuapp.com/)
 
 ## UML diagram
 <img src='https://i.ibb.co/6PCmkYg/Untitled-drawio.png' alt='img'/>
